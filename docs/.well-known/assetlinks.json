@@ -1,11 +1,11 @@
 [
   {
-    "relation": ["delegate_permission/common.handle_all_urls"],
+    "relation" :["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
       "package_name": "com.example.deep_link_demo",
       "sha256_cert_fingerprints": [
-        "YOUR_SHA256_FINGERPRINT_HERE"
+        "F9E8DB2796B7EB4FD43BEA1E1C9D9B23ED2D0FA782C577DEDEDBC8E2932C0CD7"
       ]
     }
   }
