@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product - Deep Link Demo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        
+        .product-info {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="loader"></div>
+        <h1>🛍️ Opening Product...</h1>
+        <p id="status">Đang mở ứng dụng...</p>
+        <div class="product-info">
+            <p><strong>Product ID:</strong> <span id="productId">-</span></p>
+            <p><strong>Deep Link:</strong> <span id="deepLink">-</span></p>
+        </div>
+        <p style="font-size: 0.9em; color: #999;">
+            Nếu app không tự động mở, hãy tap vào nút bên dưới
+        </p>
+        <a href="#" id="openLink" class="btn">Mở App</a>
+        <a href="../index.html" class="btn" style="background: #6c757d;">Quay lại</a>
+    </div>
+    
+    <script>
+        // Get product ID from URL path
+        const pathParts = window.location.pathname.split('/');
+        const productId = pathParts[pathParts.length - 1] || pathParts[pathParts.length - 2] || '12345';
+        
+        // Get query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        let queryString = '';
+        if (urlParams.toString()) {
+            queryString = '?' + urlParams.toString();
+        }
+        
+        // Construct deep link
+        const customSchemeLink = `demoapp://product/${productId}${queryString}`;
+        
+        // Update UI
+        document.getElementById('productId').textContent = productId;
+        document.getElementById('deepLink').textContent = customSchemeLink;
+        document.getElementById('openLink').href = customSchemeLink;
+        
+        // Auto open after 1 second
+        setTimeout(() => {
+            console.log('Attempting to open:', customSchemeLink);
+            window.location.href = customSchemeLink;
+            
+            // Update status
+            document.getElementById('status').textContent = 'Đã gửi yêu cầu mở app!';
+        }, 1000);
+        
+        // Fallback: redirect to app store if app not installed (after 3 seconds)
+        setTimeout(() => {
+            document.getElementById('status').innerHTML = 
+                'App chưa được cài đặt hoặc không thể mở.<br>Vui lòng cài đặt app trước.';
+        }, 3000);
+    </script>
+</body>
+</html>

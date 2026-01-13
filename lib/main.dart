@@ -113,9 +113,37 @@ class HomeController extends GetxController {
 
       // Delay 500ms to ensure GetX auto navigation completes
       _navigationTimer = Timer(const Duration(milliseconds: 500), () {
+        // Parse path for HTTPS links from GitHub Pages
+        String targetHost = uri.host;
+        String targetPath = uri.path;
+
+        // Handle GitHub Pages URL: https://lehuuthanh23.github.io/demo-deep-link/product/123
+        if (uri.scheme == 'https' &&
+            uri.host == 'lehuuthanh23.github.io' &&
+            uri.path.startsWith('/demo-deep-link/')) {
+          // Remove /demo-deep-link prefix
+          targetPath = uri.path.replaceFirst('/demo-deep-link', '');
+          targetHost = 'product'; // Default, will be overridden below
+
+          // Parse the rest of the path
+          final pathSegments = targetPath
+              .split('/')
+              .where((s) => s.isNotEmpty)
+              .toList();
+          if (pathSegments.isNotEmpty) {
+            targetHost = pathSegments[0]; // product or promotion
+            targetPath = pathSegments.length > 1
+                ? '/${pathSegments.sublist(1).join('/')}'
+                : '/';
+          }
+        }
+
         // Handle each deep link type
-        if (uri.host == 'product' && uri.pathSegments.isNotEmpty) {
-          final productId = uri.pathSegments.first;
+        if ((targetHost == 'product' || uri.host == 'product') &&
+            (uri.pathSegments.isNotEmpty || targetPath != '/')) {
+          final productId = uri.pathSegments.isNotEmpty
+              ? uri.pathSegments.last
+              : targetPath.split('/').where((s) => s.isNotEmpty).last;
           final routePath = '/product/$productId';
 
           debugPrint(
@@ -134,8 +162,11 @@ class HomeController extends GetxController {
             Get.until((route) => route.settings.name == '/');
             Get.toNamed(routePath, parameters: uri.queryParameters);
           }
-        } else if (uri.host == 'promotion' && uri.pathSegments.isNotEmpty) {
-          final promoCode = uri.pathSegments.first;
+        } else if ((targetHost == 'promotion' || uri.host == 'promotion') &&
+            (uri.pathSegments.isNotEmpty || targetPath != '/')) {
+          final promoCode = uri.pathSegments.isNotEmpty
+              ? uri.pathSegments.last
+              : targetPath.split('/').where((s) => s.isNotEmpty).last;
           final routePath = '/promotion/$promoCode';
 
           debugPrint(
