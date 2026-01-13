@@ -89,6 +89,13 @@ Sau 1-2 phút, truy cập:
 https://lehuuthanh23.github.io/demo-deep-link/
 ```
 
+**Bonus - Test deep link trực tiếp:**
+```
+https://lehuuthanh23.github.io/demo-deep-link/product/123
+https://lehuuthanh23.github.io/demo-deep-link/promotion/SUMMER50
+```
+Nhờ file `404.html`, các URL này sẽ tự động parse và mở app!
+
 ---
 
 ### 🔧 Medium-term (30-60 phút) - Optional
